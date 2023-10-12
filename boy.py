@@ -61,6 +61,7 @@ class Sleep:
     @staticmethod
     def enter(boy,e):
         boy.frame=0
+        print('sleep')
         pass
 
     @staticmethod
@@ -74,7 +75,7 @@ class Sleep:
     @staticmethod
     def draw(boy):
         if boy.action==2:
-            boy.image.clip_composite_draw(boy.frame*100,boy.action*100,100,100,math.pi/2,' ',boy.x+25,boy.y-25,100,100)
+            boy.image.clip_composite_draw(boy.frame*100,boy.action*100,100,100,-math.pi/2,' ',boy.x+25,boy.y-25,100,100)
         else:
             boy.image.clip_composite_draw(boy.frame*100,boy.action*100,100,100,math.pi/2,' ',boy.x-25,boy.y-25,100,100)
 
@@ -111,7 +112,6 @@ class AutoRun: #자동이동
             boy.dir,boy.action=-1,0
         elif boy.action==3:
             boy.dir,boy.action=1,1
-        boy.v=1
         boy.start_time=get_time()
         print("autorun enter")
         pass
@@ -123,16 +123,13 @@ class AutoRun: #자동이동
     @staticmethod
     def do(boy):
         boy.frame=(boy.frame+1)%8
-        if (boy.x+boy.dir*boy.v>0 and boy.x+boy.dir*boy.v<800): #default x size
-            boy.x+=boy.dir*boy.v
-            boy.v+=1
+        if (boy.x+boy.dir*10>=0 and boy.x+boy.dir*10<=800): #default x size
+            boy.x+=boy.dir*10
         else :
             boy.action=1 if boy.action==0 else 0
             if boy.dir==1:
-                boy.x=800-(boy.v-(800-boy.x))
                 boy.action,boy.dir=0,-1
             elif boy.dir==-1:
-                boy.x=boy.v-boy.x
                 boy.action,boy.dir=1,1
         if get_time()-boy.start_time>3:
             boy.state_machine.handle_event(('TIME_OUT',0))
@@ -140,7 +137,7 @@ class AutoRun: #자동이동
 
     @staticmethod
     def draw(boy):
-        boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y)
+        boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y+15,150,150)
         pass
 
 class StateMachine:
