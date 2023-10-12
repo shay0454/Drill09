@@ -24,13 +24,14 @@ def left_down(e):
 def left_up(e):
     return e[0]=='INPUT' and e[1].type==SDL_KEYUP and e[1].key==SDLK_LEFT
 
+def press_a(e):
+    return e[0]=='INPUT' and e[1].type==SDL_KEYDOWN and e[1].key==SDLK_a
 class Idle:
     @staticmethod
     def do(boy):
         boy.frame=(boy.frame+1)%8
         if get_time()-boy.start_time>3:
             boy.state_machine.handle_event(('TIME_OUT',0))
-        print("Idle doing")
         pass
 
     @staticmethod
@@ -39,20 +40,18 @@ class Idle:
             boy.action=2
         elif boy.action==1:
             boy.action=3
-        print("Idle enter action")
         boy.dir=0
         boy.start_time=get_time()
         boy.frame=0
+        print("Idle enter")
         pass
 
     @staticmethod
     def exit(boy,e):
-        print("Idle exit action")
         pass
 
     @staticmethod
     def draw(boy):
-        print("Idle draw action")
         boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y)
         pass
     
@@ -88,6 +87,7 @@ class Run:
             boy.dir,boy.action=1,1
         elif left_down(e) or right_up(e):
             boy.dir,boy.action=-1,0
+        print('run')
     @staticmethod
     def exit(boy,e):
         pass
@@ -101,10 +101,17 @@ class Run:
     @staticmethod
     def draw(boy):
         boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y)
+        print('run')
 
 class AutoRun:
     @staticmethod
     def enter(boy,e):
+        if boy.action==0 or boy.action==2:
+            boy.dir,boy.action=-1,0
+        elif boy.action==1 or boy.action==3:
+            boy.dir,boy.action=1,1
+        boy.v=1
+        print("autorun enter")
         pass
 
     @staticmethod
@@ -113,10 +120,16 @@ class AutoRun:
 
     @staticmethod
     def do(boy):
+        boy.frame=(boy.frame+1)%8
+        if (boy.x>0 and boy.x<800): #default x size
+            boy.x+=boy.dir*boy.v
+            boy.v+=1
+            
         pass
 
     @staticmethod
     def draw(boy):
+        boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y)
         pass
 
 class StateMachine:
@@ -124,9 +137,10 @@ class StateMachine:
         self.cur_state = Idle
         self.boy=boy
         self.table={
-            Idle:{right_down:Run, left_down:Run, left_up:Run, right_up:Run, time_out:Sleep},
+            Idle:{right_down:Run, left_down:Run, left_up:Run, right_up:Run, time_out:Sleep,press_a:AutoRun},
             Run:{right_down:Idle, left_down:Idle, left_up:Idle, right_up:Idle},
             Sleep:{right_down:Run, left_down:Run, left_up:Run, right_up:Run, space_down:Idle},
+            AutoRun:{right_down:Run, left_down:Run, left_up:Run, right_up:Run,time_out:Idle}
             }
 
     def start(self):
