@@ -26,6 +26,7 @@ def left_up(e):
 
 def press_a(e):
     return e[0]=='INPUT' and e[1].type==SDL_KEYDOWN and e[1].key==SDLK_a
+
 class Idle: #기본상태
     @staticmethod
     def do(boy):
@@ -43,7 +44,6 @@ class Idle: #기본상태
         boy.dir=0
         boy.start_time=get_time()
         boy.frame=0
-        print("Idle enter")
         pass
 
     @staticmethod
@@ -55,13 +55,11 @@ class Idle: #기본상태
         boy.image.clip_draw(boy.frame*100,boy.action*100,100,100,boy.x,boy.y)
         pass
     
-
 class Sleep:
 
     @staticmethod
     def enter(boy,e):
         boy.frame=0
-        print('sleep')
         pass
 
     @staticmethod
@@ -78,7 +76,6 @@ class Sleep:
             boy.image.clip_composite_draw(boy.frame*100,boy.action*100,100,100,-math.pi/2,' ',boy.x+25,boy.y-25,100,100)
         else:
             boy.image.clip_composite_draw(boy.frame*100,boy.action*100,100,100,math.pi/2,' ',boy.x-25,boy.y-25,100,100)
-
         pass
 
 class Run:
@@ -88,7 +85,7 @@ class Run:
             boy.dir,boy.action=1,1
         elif left_down(e) or right_up(e):
             boy.dir,boy.action=-1,0
-        print('run')
+
     @staticmethod
     def exit(boy,e):
         pass
@@ -113,7 +110,6 @@ class AutoRun: #자동이동
         elif boy.action==3:
             boy.dir,boy.action=1,1
         boy.start_time=get_time()
-        print("autorun enter")
         pass
 
     @staticmethod
@@ -168,9 +164,6 @@ class StateMachine:
 
     def draw(self):
         self.cur_state.draw(self.boy)
-
-
-
 
 class Boy:
     def __init__(self,name):

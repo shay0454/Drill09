@@ -1,9 +1,9 @@
 from pico2d import *
 
-from grass import Grass
-from boy import Boy
 import os
 os.chdir(os.path.dirname(__file__))
+from grass import Grass
+from boy import Boy
 
 # Game object class here
 
