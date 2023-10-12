@@ -121,10 +121,17 @@ class AutoRun:
     @staticmethod
     def do(boy):
         boy.frame=(boy.frame+1)%8
-        if (boy.x>0 and boy.x<800): #default x size
+        if (boy.x+boy.dir*boy.v>0 and boy.x+boy.dir*boy.v<800): #default x size
             boy.x+=boy.dir*boy.v
             boy.v+=1
-            
+        else :
+            boy.action=1 if boy.action==0 else 0
+            if boy.dir==1:
+                boy.x=800-(boy.v-(800-boy.x))
+                boy.action,boy.dir=0,-1
+            elif boy.dir==-1:
+                boy.x=boy.v-boy.x
+                boy.action,boy.dir=1,1
         pass
 
     @staticmethod
